@@ -45,9 +45,6 @@ class Promise {
     this.onResolvedCallbacks = []
     this.onRejectedCallbacks = []
     let resolve = value => { // 成功的函数
-      if (value instanceof Promise) {
-        return value.then(resolve, reject)
-      }
       if (this.status === PENDING) {
         this.status = RESOLVED
         this.value = value
@@ -118,9 +115,6 @@ class Promise {
     })
     return promise2
   }
-  catch(errCallback) { // 没有传入成功的then方法就是catch的原理
-    return this.then(null, errCallback)
-  }
 }
 
 Promise.defer = Promise.deferred = function () {
@@ -130,18 +124,6 @@ Promise.defer = Promise.deferred = function () {
     dfd.reject = reject
   })
   return dfd
-}
-
-Promise.reject = function (reason) {
-  return new Promise((resolve, reject) => {
-    reject(value)
-  })
-}
-
-Promise.resolve = function (value) {
-  return new Promise((resolve, reject) => {
-    resolve(value)
-  })
 }
 
 module.exports = Promise
