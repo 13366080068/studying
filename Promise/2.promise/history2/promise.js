@@ -48,7 +48,7 @@ class Promise {
       if (this.status === PENDING) {
         this.status = RESOLVED
         this.value = value
-        this.onRejectedCallbacks.forEach(fn => fn())
+        this.onResolvedCallbacks.forEach(fn => fn())
       }
     }
     let reject = reason => { // 失败的函数

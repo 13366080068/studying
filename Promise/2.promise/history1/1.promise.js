@@ -9,7 +9,7 @@
   // 1.每个promise需要一个执行器函数(这个函数回立即执行)
   // 2.new Promise之后会产生一个promise实例，这个实例上存在一个then方法
   // 3.executor中需要提供一个成功和失败的方法
-  let Promise = require('./promise')
+let Promise = require('./promise')
 let p = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve('有钱了')

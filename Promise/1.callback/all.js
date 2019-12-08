@@ -28,4 +28,4 @@ fs.readFile('./after.js', 'utf8', (err, data) => {
   events.emit(data)
 })
 
-// 发布订阅 发布 订阅
+// 发布订阅 发布 arr.forEach 订阅 [fn, fn, fn]

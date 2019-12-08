@@ -13,8 +13,8 @@
 let p = new Promise((resolve, reject) => {
   console.log(1)
   throw new Error('忘记了 ')
-  resolve('发工资了')
   reject('钱丢了')
+  resolve('发工资了')
 })
 p.then(data => {
   console.log(data)
