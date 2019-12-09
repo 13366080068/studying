@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .ball {
+      width: 100px; height: 100px; background: red; border-radius: 50%;
+      position: absolute; left: 0;
+    }
+    .ball1 {
+      top: 10px;
+    }
+    .ball2 {
+      top: 120px;
+    }
+    .ball3 {
+      top: 230px;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="ball ball1"></div>
+    <div class="ball ball2"></div>
+    <div class="ball ball3"></div>
+  </div>
+  <script>
+    let $ = document.querySelector.bind(document)
+    function move(el, target) {
+      return new Promise((resolve, reject) => {
+        let idx = 0
+        function step() {
+          idx += 3
+          if (idx < target) {
+            el.style.left = idx + 'px'
+            requestAnimationFrame(step)
+          } else {
+            resolve()
+          }
+        }
+        requestAnimationFrame(step)
+      })
+    }
+    async function m() {
+      await move($('.ball1'), 200)
+      await move($('.ball2'), 200)
+      await move($('.ball3'), 200)
+    }
+    m().then(() => {
+      alert('Success')
+    })
+  </script>
+</body>
+</html>
