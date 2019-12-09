@@ -11,13 +11,13 @@ const resolvePromise = (promise, x, resolve, reject) => {
   let called
   if ((typeof x === 'object' && x !== null) || typeof x === 'function') {
     // 如何判断一个对象是不是promise promise必须要有then方法
-    try { // 有可能这个then方法在别人的promise中是通过defineProperty定义的取值的时候可能会发生异常，那就让这个promise2变成失败即可
+    try { // 有可能这个then方法在别人的promise中是通过defineProperty定义的，取值的时候可能会发生异常，那就让这个promise2变成失败即可
       let then = x.then // 获取then方法
-      if (typeof then === 'function') {
+      if (typeof then === 'function') { // 如果它有then函数说明它是一个promise
         then.call(x, (y) => { // 解析y保证它是一个普通值
           if (called) return
           called = true
-          resolvePromise(promise2, y, resolve, reject)
+          resolvePromise(promise, y, resolve, reject)
         }, r => {
           if (called) return
           called = true
@@ -31,8 +31,7 @@ const resolvePromise = (promise, x, resolve, reject) => {
       called = true
       reject(e)
     }
-  } else {
-    // x就是一个普通值
+  } else { // x就是一个普通值
     resolve(x)
   }
 }
@@ -44,14 +43,14 @@ class Promise {
     this.reason = undefined
     this.onResolvedCallbacks = []
     this.onRejectedCallbacks = []
-    let resolve = value => { // 成功的函数
-      if (value instanceof Promise) {
-        return value.then(resolve, reject)
+    let resolve = value => { // value 有可能是一个promise
+      if (value instanceof Promise) { // 只能判断它是自己的promise
+        return value.then(resolve, reject) // 递归
       }
       if (this.status === PENDING) {
         this.status = RESOLVED
         this.value = value
-        this.onRejectedCallbacks.forEach(fn => fn())
+        this.onResolvedCallbacks.forEach(fn => fn())
       }
     }
     let reject = reason => { // 失败的函数
@@ -67,6 +66,7 @@ class Promise {
       reject(e)
     }
   }
+
   then(onFulfilled, onRejected) {
     onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val
     onRejected = typeof onRejected === 'function' ? onRejected : err => {throw err}
@@ -77,6 +77,7 @@ class Promise {
           try {
             let x = onFulfilled(this.value)
             resolvePromise(promise2, x, resolve, reject)
+            // 只需要拿到then的返回结果 直接将这个值传递给promise2即可
           } catch(e) {
             reject(e)
           }
@@ -99,7 +100,7 @@ class Promise {
             try {
               let x = onFulfilled(this.value) // AOP
               resolvePromise(promise2, x, resolve, reject)
-            } catch(e) {
+            } catch (e) {
               reject(e)
             }
           }, 0)
@@ -118,11 +119,12 @@ class Promise {
     })
     return promise2
   }
-  catch(errCallback) { // 没有传入成功的then方法就是catch的原理
+
+  catch(errCallback) { // 没有传入成功的then方法就是catch
     return this.then(null, errCallback)
   }
 }
-
+// promises-aplus-tests 有一个入口   promises-aplus-tests  + 文件名
 Promise.defer = Promise.deferred = function () {
   let dfd = {}
   dfd.promise = new Promise((resolve, reject) => {
@@ -132,13 +134,13 @@ Promise.defer = Promise.deferred = function () {
   return dfd
 }
 
-Promise.reject = function (reason) {
+Promise.reject = function (reason) { // 直接将原因向下抛出 没有等待的效果
   return new Promise((resolve, reject) => {
-    reject(value)
+    reject(reason)
   })
 }
 
-Promise.resolve = function (value) {
+Promise.resolve = function (value) { // 如果里面传入的值是一个promise 那么会等待这个promise执行完成
   return new Promise((resolve, reject) => {
     resolve(value)
   })

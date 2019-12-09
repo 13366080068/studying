@@ -1,7 +1,7 @@
 let Promise = require('./promise')
 
 let promise = new Promise((resolve, reject) => {
-  reject(100)
+  resolve(100)
 })
 
 // 穿透

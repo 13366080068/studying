@@ -4,9 +4,9 @@ let { promisify } = require('util')
 let read = promisify(fs.readFile)
 
 // promise特性：then方法中传递的函数成功、失败这两个函数的返回值可以返回一个promise
-
+// 如果返回的是一个promise，会用这个promise的状态作为下一次then的结果
 // 1.返回的是promise 2.抛出错误 3.返回的是普通值
-read('./name1.txt', 'utf8').then(data => {
+read('./content1.txt', 'utf8').then(data => {
   return read(data + '1', 'utf8')
 }, err => {
   console.log('inner')

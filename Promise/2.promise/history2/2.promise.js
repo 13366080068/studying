@@ -11,7 +11,7 @@ let Promise = require('./promise')
 //   console.log(data)
 // })
 
-let promise = new Promise((resolve) => {
+let promise = new Promise((resolve, reject) => {
   resolve()
 })
 

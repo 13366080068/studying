@@ -4,7 +4,7 @@ const REJECTED = 'REJECTED'
 
 const resolvePromise = (promise, x, resolve, reject) => {
   if (promise === x) { // 说明死循环了，直接拒绝即可
-    return reject(new TypeError('Chaining cycle detected for promise'))
+    return reject(new TypeError('Chaining cycle detected for promise #<Promise'))
   }
   // 接下来 判断x的类型 是promise还是普通值
   // 如果x 不是对象也不是函数 string null undefined
@@ -17,7 +17,7 @@ const resolvePromise = (promise, x, resolve, reject) => {
         then.call(x, (y) => { // 解析y保证它是一个普通值
           if (called) return
           called = true
-          resolvePromise(promise2, y, resolve, reject)
+          resolvePromise(promise, y, resolve, reject)
         }, r => {
           if (called) return
           called = true
@@ -115,15 +115,6 @@ class Promise {
     })
     return promise2
   }
-}
-
-Promise.defer = Promise.deferred = function () {
-  let dfd = {}
-  dfd.promise = new Promise((resolve, reject) => {
-    dfd.resolve = resolve
-    dfd.reject = reject
-  })
-  return dfd
 }
 
 module.exports = Promise

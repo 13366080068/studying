@@ -1,4 +1,4 @@
-// let Promise = require('./promise')
+let Promise = require('./promise')
 // let fs = require('fs')
 
 // function read(...args) {
@@ -24,9 +24,16 @@
 
 let p = new Promise((resolve, reject) => {
   setTimeout(() => {
-    reject(1000)
-  }, 1000)
+    resolve(5000)
+  }, 5000)
 })
-Promise.reject(p).catch(err => {
+Promise.reject(p).then(data => {
+  console.log(data)
+}).catch(err => {
+  console.log(err)
+})
+Promise.reject(p).then(data => { // reject不会等待p的promise，直接抛错到.catch
+  console.log(data)
+}).catch(err => {
   console.log(err)
 })
