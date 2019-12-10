@@ -23,7 +23,7 @@ function intersection(a, b) {
 }
 console.log(intersection(arr1, arr2))
 
-// Array。from 不借助自身的迭代器的 ...能展开的内容必须要有迭代器
+// Array.from 不借助自身的迭代器的 ...能展开的内容必须要有迭代器
 // console.log([...{ // 生成器可以产生迭代器
 //   0: 1,
 //   1: 2,
