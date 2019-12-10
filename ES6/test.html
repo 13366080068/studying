@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    class MyA {
+      constructor() {
+        this.a = 1
+      }
+    }
+    let a = {b: 1}
+    let m = new WeakMap() // WeakMap WeakSet表示都是弱引用
+    m.set(a, 100)
+    a = null
+  </script>
+</body>
+</html>
