@@ -27,5 +27,8 @@ function deepClone(value, hash = new WeakMap) {
   }
   return instance
 }
-let newObj = deepClone(a)
-console.log(a) // string number 基础类型 function函数 拷贝的是对象(正则 日期。。。)或者数组 undefined null
+let newObj = deepClone(obj)
+obj.age.val = 18
+console.log(newObj)
+let newObj1 = deepClone(a)
+console.log(newObj1) // string number 基础类型 function函数 拷贝的是对象(正则 日期。。。)或者数组 undefined null

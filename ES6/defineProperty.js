@@ -45,7 +45,7 @@ let data = Object.freeze({ // 给所有属性都重新定义 增加get和set
 const update = () => {
   console.log('update view') // 模拟更新视图
 }
-// 不支持数组 Array.push shift unshift pop reverse sort splice slice
+// 不支持数组 Array.push pop shift unshift reverse sort splice slice
 function defineReactive(target, key, value) {
   observer(value) // 如果是深层次 需要递归处理
   // 内部源码中会判断 如果不能修改直接不会重新定义属性

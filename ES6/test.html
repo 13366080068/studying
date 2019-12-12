@@ -13,8 +13,8 @@
         this.a = 1
       }
     }
-    let a = {b: 1}
-    let m = new WeakMap() // WeakMap WeakSet表示都是弱引用
+    let a = new MyA
+    let m = new Map() // WeakMap WeakSet表示都是弱引用
     m.set(a, 100)
     a = null
   </script>
