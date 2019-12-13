@@ -16,16 +16,15 @@ function Tiger(name) { // this
   Animal.call(this, name)
 }
 // Tiger.prototype = Animal.prototype 错误的这叫混合
-// Object.setPrototypeOf(Tiger.prototype, Animal.prototype) // 同Tiger.prototype.__proto__ = Animal.prototype
-function create(parentPrototype) {
+// Object.setPrototypeOf(Tiger.prototype, Animal.prototype) // 实现继承，同Tiger.prototype.__proto__ = Animal.prototype
+function create(parentPrototype) { // 手写实现一个Object.create
   function Fn() {}
   Fn.prototype = parentPrototype
   let instance = new Fn()
   instance.constructor = Tiger
   return instance
 }
-
-Tiger.prototype = Objec.create(Animal.prototype, { constructor: { value: Tiger } })
+Tiger.prototype = Objec.create(Animal.prototype, { constructor: { value: Tiger } }) // 也实现了继承
 let tiger = new Tiger('White Tiger')
 console.log(tiger.name) // 继承了实例属性
 console.log(tiger.eat()) // 公共方法

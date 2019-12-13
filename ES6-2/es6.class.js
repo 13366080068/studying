@@ -9,14 +9,14 @@ class Animal { // Object.defineProperty
   eat() { // Animal.prototype.eat
     console.log('Eat Meat')
   }
-  get a() { // Animal.prototype.a = 100
-    return 100
+  get a() { // Animal.prototype.a = 200
+    return 200
   }
 }
 
 class Tiger extends Animal { // 会继承实例 + 公共属性
   constructor(props) { // 写了constructor继承必须要写super
-    super(props) // super就是父类 Animal.call(this, name)
+    super(props) // super就是父类 Animal.call(this, props)
   }
   eat() { // Animal.prototype
     super.eat()
@@ -32,4 +32,3 @@ console.log(tiger.a)
 // 实例属性 公共属性 静态方法 属性访问器
 
 // 装饰器 肯定会被废弃 es7语法
-
