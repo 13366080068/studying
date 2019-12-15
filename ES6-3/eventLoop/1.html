@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    // 默认会执行当前脚本 先把脚本执行完毕后 取出所有的微任务进行处理，处理完毕后，从宏任务 获取第一个任务执行，第一个宏任务执行完毕，去再次清空做任务，再依次取宏任务
+    // vue.nextTick() 延迟执行某个函数（异步api 可以等待同步代码都执行完毕 后再去执行这里的回调）
+    // vue的特点 异步更新数据 会在当前代码执行完毕后 把更新（异步）操作 放到队列中
+    let callbacks = []
+    console.log(111)
+    function nextTick(cb) {
+      callbacks.push(cb)
+    }
+    nextTick(() => {
+      console.log(app.children.length)
+    })
+    function flushCallbacks() {
+      callbacks.forEach(fn => fn())
+    }
+    let timerFunc = () => {
+      // 1. promise优先级最高
+      if (typeof Promise !== 'undefined') {
+        return Promise.resolve().then(flushCallbacks)
+      }
+      // 2. 如果无法使用promise 会降级成 MutationObserver
+      if (typeof MutationObserver !== 'undefined') {
+        let observer = new MutationObserver(flushCallbacks)
+        return observer.observe(app, { childList: true })
+      }
+      // 3. 宏任务 setImmediate MessageChannel
+      if (typeof setImmediate !== 'undefined') {
+        return setImmediate(flushCallbacks)
+      }
+      setTimeout(flushCallbacks)
+    }
+    timerFunc()
+    console.log(2222)
+    for (let i = 0; i < 10; i++) {
+      app.appendChild(document.createElement('p'))
+    }
+  </script>
+</body>
+</html>
