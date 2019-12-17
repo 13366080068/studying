@@ -4,9 +4,7 @@
 // 2. 文件模块特点 必须路径是相对路径、绝对路径 './xxxx' require(path.resolve(__dirname, 'a.js'))
 // 3. 第三方模块 和核心模块一样 但是需要安装
 
-// 文件的引用规则 每个版本不太一样
-
-// 新版本中会先查找文件 在查找文件夹
+// 文件的引用规则 每个版本不太一样：新版本中会先查找文件 在查找文件夹
 // 如果没有匹配文件 会找文件夹 如果文件夹下有package.json，找main入口，如果有引入main 否则找index.js
 let str = require('./a')
 console.log(str)

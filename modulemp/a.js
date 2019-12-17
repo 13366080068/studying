@@ -1,4 +1,4 @@
-exports.a = 'hello'
+// exports.a = 'hello'
 module.exports = 'hello'
 
 // let exports = module.exports = {}
