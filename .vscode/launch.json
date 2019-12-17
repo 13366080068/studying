@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/module/useA1.js"
+      "program": "${workspaceFolder}/npm/events.js"
     }
   ]
 }
