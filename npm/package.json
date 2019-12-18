@@ -1,6 +1,6 @@
 {
-  "name": "npm",
-  "version": "2.1.0",
+  "name": "zf-npm-pack",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -10,7 +10,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^3.0.0",
+    "jquery": "^3.4.1",
     "mime": "^2.4.4"
   },
   "scripts": {
