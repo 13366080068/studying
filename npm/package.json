@@ -9,15 +9,14 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "bootstrap": "^3.0.0",
-    "jquery": "^3.4.1",
-    "mime": "^2.4.4"
-  },
   "scripts": {
     "predev": "echo xxx",
     "dev": "mime a.js",
     "postdev": "echo ooo"
+  },
+  "dependencies": {
+    "bootstrap": "^3.4.1",
+    "mime": "^2.4.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5"

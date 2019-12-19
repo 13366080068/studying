@@ -1,19 +1,22 @@
 // node 核心异步非阻塞 监听，异步完成后去处理
-
 // 发布订阅模式 先做好监听，异步成功后通知我
-
-let EventEmitter = require('events') // on/emit/off /once/newListener
+let EventEmitter = require('./events') // on/emit/off /once/newListener
 let util = require('util') // promisify inherits 判断类型
+// $on $emit {a:[fn,fn2],b:[fc,fc]}
+/* <my-component @a="fn"  @a="fn2" @b="fc" @b="fc"></my-component> */
 
-// $on $emit
-
-function Girl() {
-
-}
+// Object.setPrototypeOf __proto__
+function Girl() {}
 util.inherits(Girl, EventEmitter) // 实现继承公共属性
-
 let girl = new Girl()
 girl.on('newListener', function(type) { // 每次我调用on方法时 就会触发此函数
+  console.log('type', type)
+  process.nextTick(() => {
+    girl.emit(type)
+  })
+})
+girl.on('newListener', function(type) { // 每次我调用on方法时 就会触发此函数
+  console.log('type', type)
   process.nextTick(() => {
     girl.emit(type)
   })
@@ -26,6 +29,6 @@ let listener = who => {
 }
 girl.once('女生失恋', listener)
 // removeListenner
-// girl.off('女生失恋', listener)
-girl.emit('女生失恋', '因为xxx')
+girl.off('女生失恋', listener)
+// girl.emit('女生失恋', '因为xxx')
 // 使用继承

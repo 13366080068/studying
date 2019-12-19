@@ -1,7 +1,6 @@
 function EventEmitter() {
   this._events = Object.create(null)
 }
-
 EventEmitter.prototype.on = function(eventName, callback) {
   // 有可能这个名字是newListener
   // 只要绑定了名字就需要找newListener中对应的方法依次执行
@@ -12,7 +11,6 @@ EventEmitter.prototype.on = function(eventName, callback) {
   callbacks.push(callback) // 把当前的callback放到数组中
   this._events[eventName] = callbacks
 }
-
 EventEmitter.prototype.emit = function(eventName, ...args) {
   let callbacks = this._events[eventName] || []
   callbacks.forEach(fn => {
@@ -30,7 +28,7 @@ EventEmitter.prototype.once = function(eventName, callback) {
     callback(...args) // 执行原函数
     this.off(eventName, callback) // 关闭one事件
   }
-  one.callback = callback
-  this.on(eventName, one) //
+  one.callback = callback // 自定义事件
+  this.on(eventName, one) // 先绑定
 }
 module.exports = EventEmitter

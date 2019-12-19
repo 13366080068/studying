@@ -10,7 +10,6 @@
 ```
 - npm link 创建连接
 
-
 如果想在命令行中使用命令
 
 C:\Users\test1\AppData\Roaming\npm\http-server -> C:\Users\test1\AppData\Roaming
