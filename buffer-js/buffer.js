@@ -115,5 +115,13 @@ console.log(str) // 编码的过程
 
 // 联通不如移动
 // ef bb bf
-function stripBom(buffer) {}
+function stripBom(buffer){
+    if (buffer[0] === 0xef && buffer[1] == 0xbb && buffer[2] === 0xbf ){
+        return buffer.slice(3)
+    }else{
+        return buffer
+    }
+}
+buffer = fs.readFileSync(path.resolve(__dirname, './1.txt'))
+console.log(stripBom(buffer), buffer.length) // 去bom头
 

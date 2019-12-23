@@ -4,6 +4,7 @@ let fs = require('fs') // fs中方法很多都是有同步和异步两种
 // readFile readFileSync 异步方法回调函数的参数第一个是错误参数
 let path = require('path')
 
+// 1)读取
 // 默认读取采用buffer
 // 如果文件不存在 默认会报错 读文件必须要保证文件存在
 // 2) 写入时默认会将内容转化成utf8格式 toString('utf8')
