@@ -7,16 +7,42 @@
 // for (let i = 0; i < 8; i++) {
 //   sum += Math.pow(2, i)
 // }
-// console.log(sum)
+// console.log(sum) // 我们可以把任意进制转换成十进制  当前位的值 * 当前进制^所在的第几位 累加
 // 255 对应的16进制 ff 规则就是当前要转换的进制取余下
 // 默认我们不需要自己转换
 
-// 1.buffer的声明方式 3种 长度 数字 数组 buffer不能增大
-// 数组 索引 循环
-let buffer = Buffer.from('珠峰')
-// buffer.forEach(item => console.log(item))
+// console.log(parseInt('111', 2)) // 将任意进制转换成任意进制 转换出来的是字符串
+// console.log((0x16).toString(10)) // base64编码
+
+// buffer中存的是16进制 内存 内存在声明的时候要指定长度 单位中数字 都是字节单位
+// 1数字  2字符串  3数组的方式来声明
+let buffer = Buffer.alloc(10)
+console.log(buffer) // 长得像数组
+
+let buffer1 = Buffer.from('珠峰')
+console.log(buffer1)
+console.log(buffer1.toString('utf8'))
+
+// 进制转换实现的 base64  加密算法  汉字举例 3 * 8 = 4 * 6
+let buf = Buffer.from('珠')
+console.log(buf.toString('base64'))
+
+console.log(parseInt('00111001',2))
+console.log(parseInt('00111000',2))
+console.log(parseInt('00111110',2))
+console.log(parseInt('00100000',2))
+// 57 56 62 32
+
+// base64的编码是公开的
+let str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+str += str.toLocaleLowerCase();
+str+= '0123456789+/';
+console.log(str[57] + str[56] + str[62] + str[32]); // cookie
+
+buffer = Buffer.from('珠峰')
 let newBuffer = buffer.slice(0, 3)
-newBuffer = 100
+newBuffer[0]= 100
+console.log(newBuffer.toString())
 console.log(buffer.length)
 console.log(Buffer.isBuffer(buffer))
 
@@ -58,8 +84,18 @@ buffer = Buffer.from('我爱a你a爱你')
 // gb18030 127 * 255 = 36400
 // unicode 编码
 // utf8 基于unicode 编码 实现可变编码
-
-Buffer.prototype.split = function (sep) {}
+Buffer.prototype.split = function (sep) {
+  let len = Buffer.from(sep).length
+  let offset = 0
+  let arr = []
+  let current = 0
+  while (-1 != (current = this.indexOf(sep, offset))) {
+      arr.push(this.slice(offset, current))
+      offset = current + len
+  }
+  arr.push(this.slice(offset))
+  return arr
+}
 
 console.log(buffer.split('爱'))
 // console.log(buffer.indexOf('爱', 6)) // 实现buffer的分割
@@ -73,12 +109,11 @@ let fs = require('fs')
 let path = require('path')
 let iconv = require('iconv-lite')
 buffer = fs.readFileSync(path.resolve(__dirname, './1.txt'))
-let str = iconv.decode(buffer, 'gbk')
+str = iconv.decode(buffer, 'gbk')
 // iconv-lite
 console.log(str) // 编码的过程
 
 // 联通不如移动
-let fs = require('fs')
 // ef bb bf
 function stripBom(buffer) {}
 
