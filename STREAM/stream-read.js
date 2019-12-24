@@ -9,9 +9,9 @@ let path = require('path')
 // rs是可读流对象 可用用基于事件的方式来得到数据  异步解决方案 回调函数
 // 参数一般不用设置
 // let rs = fs.createReadStream(path.resolve(__dirname,'1.txt'),{
-  let ReadStream = require('./ReadStream')
-let rs = new ReadableStream(path.resolve(__dirname, '1.txt'), {
-  flag: 'r', // r代表的是读取 fs.open()
+let ReadStream = require('./ReadStream')
+let rs = new ReadStream(path.resolve(__dirname, '1.txt'), {
+  flags: 'r', // r代表的是读取 fs.open()
   highWaterMark: 2, // 以字节为单位的  64k 64*1024
   start: 0,
   // end: 5, // 包前包后
@@ -23,15 +23,26 @@ let rs = new ReadableStream(path.resolve(__dirname, '1.txt'), {
 // 每次读取到的结果
 // Buffer.concat
 let arr = []
-res.on('open', function(fd) {
+rs.on('open', function(fd) { // 读预读取 第一次的数据
   console.log('open', fd)
 })
-
-res.on('data', data => {
+rs.on('data', data => { //考虑数据是二进制文件 图片
   arr.push(data)
   console.log('----data')
+  rs.pause() // 暂停触发data事件
 })
 
-res.on('end', () => {
-  console.log()
+setInterval(() => {
+  rs.resume() // 恢复的是data事件的触发
+}, 1000)
+rs.on('end', () => {
+  console.log(Buffer.concat(arr).toString())
 })
+rs.on('close', () => {
+  console.log('文件关闭')
+})
+rs.on('error', err => {
+  console.log(err)
+})
+// 控制文件流的速率
+// on('data') on('end')

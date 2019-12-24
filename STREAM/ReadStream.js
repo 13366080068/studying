@@ -12,7 +12,7 @@ class ReadStream extends EventEmitter {
     this.autoClose = options.autoClose || true
     // 状态 是否需要继续读取 flowing
     this.flowing = false // 默认flowing为false
-    this.offset = this.start
+    this.offset = this.start // 可变的
     // 1. 默认先会打开文件 触发open事件
     this.open()
     // 2. 监控用户有没有监听data事件 如果有开始读取 emit('data')
@@ -55,6 +55,15 @@ class ReadStream extends EventEmitter {
       }
       if (this.flowing) this.read() // 如果是流动模式 就继续读取
     }) // [1,2,3,4,5,6]
+  }
+  pipe(ws) {
+    this.on('data', chunk => {
+      let flag = ws.write(chunk)
+      if (!flag) this.pause()
+    })
+    ws.on('drain', () => {
+      this.resume()
+    })
   }
   pause() {
     this.flowing = false
