@@ -8,7 +8,7 @@ let server = http.createServer()
 server.on('request', (req, res) => {
   // 路由的概念 根据不同的路径 返回不同的结果
   let { pathname } = url.parse(req.url)
-  // 实现一个静态服务 http://localhost:8080/1.server.js
+  // 实现一个静态服务 http://localhost:8081/server.js
   let absFilePath = path.join(__dirname, pathname) // 不用resolve，因为resolve遇到/会返回根目录
 
   fs.stat(absFilePath, (err, statObj) => {
@@ -18,7 +18,7 @@ server.on('request', (req, res) => {
     }
     // 直接访问的是一个文件，还有可能访问的是一个目录，如果是目录 我需要找到目录下index.html
     if (statObj.isDirectory()) { // localhost:8081/ index.html
-      let homePage = path.join(absFilePath, 'index.html')
+      absFilePath = path.join(absFilePath, 'index.html')
       fs.access(absFilePath, err => {
         if (err) {
           res.statusCode = 404

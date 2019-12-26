@@ -1,21 +1,25 @@
 const http = require('http')
 const url = require('url') // {pathname, query}
 const fs = require('fs').promises
-const { createReadStream } = fs
+const { createReadStream } = require('fs')
 const path = require('path')
 const mime = require('mime')
 
-// 我希望可以通过async + await 来处理请求
-
 class Server {
   async handleRequest(req, res) { // 主要保证方法中的this 永远指向server
-    let { pathname, query } = url.parse(req.url, true)
-    let absPath = path.join(__dirname, pathname)
+    let { pathname } = url.parse(req.url, true)
+    let absPath = path.join(__dirname, pathname) // 不用resolve，因为resolve遇到/会返回根目录
     // 建议放一个ip地址 尽量不要写*
     res.setHeader('Access-Control-Allow-Origin', '*')
     // options试探性请求 只有复杂请求的时候会先发送options要求
-    res.setHeader('Access-Control-Allow-Header', 'token') // token这个字段
+    res.setHeader('Access-Control-Allow-Header', 'token') // 允许接受token这个字段
     res.setHeader('Access-Control-Allow-Methods', 'PUT,DELETE')
+    res.setHeader('Access-Control-Max-Age', 10*60) // 减少预检请求
+    console.log(req.method)
+    if (req.method.toLowerCase() === 'options') {
+      res.statusCode = 200
+      return res.end()
+    }
     // pathname 是一个ajax请求
     if (pathname === '/data') {
       res.setHeader('Content-Type', 'application/json')
