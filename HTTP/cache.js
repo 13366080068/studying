@@ -22,28 +22,52 @@ class Server {
       this.sendError(req, res)
     }
   }
-  sendFile(req, res, absPath, statObj) {
-    // 多次访问服务器 会不停的读取文件返回, 如果 连续访问我 可以做缓存
-    // 1.强制缓存 像max-age 多少秒内不要在访问我了  200, 只对当前文件引用的资源生效，不对首页生效
-    // 10s内 访问相同的资源不要在访问我了
-    // res.setHeader('Expires', new Date(Date.now() + 10000).toGMTString())
-    // 设置缓存时间10s
-    //res.setHeader('Cache-Control','max-age=10'); // 状态码还是200
-    res.setHeader('Cache-Control', 'no-cache') // 每次都向服务端发起请求,缓存了但是禁用
-    // res.setHeader('Cache-Control', 'no-store') // 不缓存
+  cache(req, res, absPath, statObj) {
+    // 1.设置强制缓存 和对比缓存
+    res.setHeader('Expires', new Date(Date.now() + 10000).toGMTString())
+    res.setHeader('Cache-Control', 'max-age=10')
 
-    // 设置对比缓存  最后的修改时间
-    let lastModified = statObj.ctime.toGMTString() // 在Response Headers里,最后的修改时间
-    console.log(req.headers)
-    let ifModifiedSince = req.headers['if-modified-since'] // 在Request Headers里,上次的修改时间
-    res.setHeader('Last-Modified', lastModified)
-    if (ifModifiedSince === lastModified) { // 可能以秒为单位不够准确 ，最后修改时间变了 但是文件没变
-      res.statusCode = 304
-      res.end() // 走缓存
-      return
+    let etag = statObj.size + ''
+    let ctime = statObj.ctime.toGMTString()
+    res.setHeader('Etag', etag)
+    res.setHeader('last-Modified', ctime)
+
+    let clientIfNoneMatch = req.headers['if-none-match']
+    let clientIfModifiedSince = req.headers['if-modified-since']
+    let flag = true
+    if (clientIfNoneMatch !== etag) {
+      flag = false
     }
-
+    if (clientIfModifiedSince !== ctime) {
+      flag = false
+    }
+    return flag
+  }
+  gzip(req, res, absPath, statObj) {
+    // Accept-Encoding: gzip, deflate, br
+    let encoding = req.headers['accept-encoding']
+    let zlib = require('zlib')
+    if (encoding.includes('gzip')) {
+      res.setHeader('Content-Encoding', 'gzip')
+      return zlib.createGzip()
+    } else if (encoding.includes('deflate')) {
+      res.setHeader('Content-Encoding', 'deflate')
+      return zlib.createDeflate()
+    }
+    return false
+  }
+  async sendFile(req, res, absPath, statObj) {
+    // 制作缓存 http 压缩
+    // if (this.cache(req, res, absPath, statObj)) {
+    //   res.statusCode = 304
+    //   return res.end()
+    // }
     res.setHeader('Content-Type', mime.getType(absPath)+ ';charset-utf8')
+    // 如果没缓存 希望将文件压缩后返回
+    let zip = this.gzip(req, res, absPath, statObj)
+    if (zip) {
+    return createReadStream(absPath).pipe(zip).pipe(res)
+    }
     createReadStream(absPath).pipe(res)
     // disk cache memory-cache
   }
@@ -62,3 +86,7 @@ let server = new Server()
 server.start(3000, () => {
   console.log('server start 3000')
 })
+
+// 304 last-modified if-modified-since
+//     etag          if-none-match
+// 打包 <!--make by 2019 12 26-->
