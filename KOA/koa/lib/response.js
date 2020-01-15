@@ -3,7 +3,7 @@ let response = {
   get body() {
     return this._body
   },
-  set body(val) {
+  set body(val) { // setter
     if (val === undefined) {
       return this.res.statusCode = 204
     }

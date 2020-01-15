@@ -1,4 +1,4 @@
-const url = request('url')
+const url = require('url')
 let request = {
   get url() {
     // ctx.request

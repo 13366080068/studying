@@ -10,10 +10,9 @@ module.exports = root => {
       if (statObj.isDirectory()) {
         absPath = path.join(absPath, 'index.html')
         await fs.access(absPath)
-      } else {
-        ctx.set('Content-Type', mime.getType(absPath) + 'charset=urf-8')
-        ctx.body = createReadStream(absPath)
       }
+      ctx.set('Content-Type', mime.getType(absPath) + ';charset=urf-8')
+      ctx.body = createReadStream(absPath)
     } catch(e) {
       await next()
     }
