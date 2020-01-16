@@ -18,7 +18,9 @@ http.createServer((req, res) => {
       session[cardId] = { money: 500 }
       res.end('money 500')
     }
+    // setCookie getCookie
   } else {
     res.end(`Not found`)
   }
+  // 如果浏览器不支持cookie 隐藏表单 url来做
 }).listen(3000)
