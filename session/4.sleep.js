@@ -1,4 +1,5 @@
 // koa @koa/multer koa-bodyparser
+
 const Koa = require('koa')
 const app = new Koa()
 
@@ -15,5 +16,5 @@ app.use(async ctx => {
   })
   ctx.body = 'end'
 })
-
+// 路由 映射关系 接口 访问不同的路径返回不同的资源 方法 restful 风格
 app.listen(3000)

@@ -1,24 +1,30 @@
-// 二级路由 路由拆分
 const Koa = require('koa')
 const Router = require('koa-router')
 let app = new Koa()
 let user = new Router()
 let article = new Router()
-
-user.prefix('/user')
+let all = new Router()
 user.get('/add', (ctx, next) => {
   ctx.body = 'add'
 })
 user.get('/remove', (ctx, next) => {
   ctx.body = 'remove'
+  throw new Error('err')
 })
-article.prefix('/article')
 article.get('/add', (ctx, next) => {
   ctx.body = 'article add'
 })
 article.get('/remove', (ctx, next) => {
   ctx.body = 'article remove'
 })
-app.use(user.routes())
-app.use(article.routes())
+all.use('/user', user.routes())
+all.use('/article', article.routes())
+app.use(all.routes())
 app.listen(3000)
+app.on('error', function (err, ctx) {
+  ctx.res.end('error') // 只能自己重新定义错误 不能通过ctx.body 去更改错误
+  console.log('err', '-----------------------')
+})
+
+// npm install koa-generator
+// koa2 -e 

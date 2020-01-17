@@ -2,6 +2,8 @@ const cluster = require('cluster')
 const cpus = require('os').cpus()
 const http = require('http')
 // 入口文件
+
+cluster.setupMaster()
 if (cluster.isMaster) {
   for (let i = 0; i < cpus.length; i++) {
     cluster.fork() // child_process fork 会以当前文件创建子进程

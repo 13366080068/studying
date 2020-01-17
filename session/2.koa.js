@@ -11,13 +11,13 @@ router.get('/',async (ctx,next)=>{
 })
 router.get('/',async (ctx,next)=>{
     ctx.body = 'home2'
-    await next()
+    // await next()
 })
 router.get('/page',async (ctx,next)=>{
     ctx.body = 'page'
-    await next()
+    // await next()
 })
-app.use(router.routes());
+app.use(router.routes())
 app.use(async ctx=>{
     ctx.body = 'end'
 })

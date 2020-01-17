@@ -6,14 +6,52 @@ const bodyparser = require('koa-bodyparser')
 const Router = require('koa-router')
 const secret = 'zfpx'
 const router = new Router()
-
+// base64 crpto
 // 写登录 给用户派发一个token
+let myjwt = {
+  escape(content) {
+    return content.replace(/\=g/, '').replace(/\+/g, '-').replace(/\//g, '_')
+  },
+  toBase64Url(content) {
+    let base64 = this.escape(Buffer.from(content).toString('base64'))
+    return base64
+  },
+  sign(content, secret) {
+    let hmac = require('crypto').createHmac('sha256', secret).update(content).digest('base64')
 
+    return this.escape(hmac)
+  },
+  encode(content, secret) {
+    let header = this.toBase64Url(JSON.stringify({ "typ": "JWT", "alg": "HS256" }))
+    content = this.toBase64Url(JSON.stringify(content))
+    let sign = this.sign(header + '.' + content, secret) // 加盐算法 crpto
 
+    return header + '.' + content + '.' + sign
+  },
+  unscape(str) {
+    str += new Array(5 - str.length % 4).join('=')
+    return str.replace(/\-/g, '+').replace(/_/g, '/')
+  },
+  decode(token, secret) {
+    let [header, content, sign] = token.split('.')
+
+    let newSign = this.sign(header + '.' + content, secret)
+    if (sign !== newSign) {
+      throw new Error('签名被篡改了')
+    } else {
+      let r = JSON.parse(Buffer.from(this.unscape(cotent), 'base64').toString())
+      if (r.expires = '当前时间') {
+
+      }
+    }
+  }
+}
+
+app.use(bodyparser())
 router.post('/login', async (ctx, next) => {
   let { username, password } = ctx.request.body
   if (username === password) {
-    let token = jwt.encode({ username }, secret)
+    let token = myjwt.encode({ username, expire: new Date(Date.now() + 10000).toGMTString() }, secret)
     ctx.body = {
       data: { username },
       token
@@ -25,6 +63,25 @@ router.post('/login', async (ctx, next) => {
     }
   }
 })
+// localStorage.setItem('token')
+router.get('/validate', async (ctx, next) => {
+  let token = ctx.get('authorization')
+  try {
+    // r = content
+    let r = myjwt.decode(token, secret)
+
+    ctx.body = {
+      data: r,
+      token: '' // 续命  新token 在重新延长过期时间
+    }
+  } catch(e) {
+    ctx.body = {
+      data: '秘钥不正确',
+      err: 1
+    }
+  }
+})
+
 app.use(router.routes())
 
 app.listen(3000)
