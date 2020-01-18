@@ -10,7 +10,7 @@ const router = new Router()
 // 写登录 给用户派发一个token
 let myjwt = {
   escape(content) {
-    return content.replace(/\=g/, '').replace(/\+/g, '-').replace(/\//g, '_')
+    return content.replace(/\=/g,'').replace(/\+/g,'-').replace(/\//g,'_')
   },
   toBase64Url(content) {
     let base64 = this.escape(Buffer.from(content).toString('base64'))
@@ -36,17 +36,17 @@ let myjwt = {
     let [header, content, sign] = token.split('.')
 
     let newSign = this.sign(header + '.' + content, secret)
-    if (sign !== newSign) {
+    if (sign !== newSign) { // 你的签名是可以的 否则说明信息被改过 
       throw new Error('签名被篡改了')
     } else {
-      let r = JSON.parse(Buffer.from(this.unscape(cotent), 'base64').toString())
+      return JSON.parse(Buffer.from(this.unscape(content), 'base64').toString())
       if (r.expires = '当前时间') {
 
       }
     }
   }
 }
-
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InpodWZlbmciLCJleHBpcmUiOiJTYXQsIDE4IEphbiAyMDIwIDAxOjUyOjU3IEdNVCJ9.SfeQAGA-ZHzWniUj7_fg7JlmWbNujaAiBrb3CwV62PA
 app.use(bodyparser())
 router.post('/login', async (ctx, next) => {
   let { username, password } = ctx.request.body
